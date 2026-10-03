@@ -1,0 +1,30 @@
+apiVersion: tekton.dev/v1
+kind: Task
+metadata:
+  name: cleanup
+spec:
+  steps:
+    - name: cleanup
+      image: alpine:3.20
+      script: |
+        #!/bin/sh
+        echo "Starting cleanup task..."
+        rm -rf /workspace/source/__pycache__
+        rm -rf /workspace/source/.pytest_cache
+        echo "Cleanup completed successfully."
+
+---
+
+apiVersion: tekton.dev/v1
+kind: Task
+metadata:
+  name: test
+spec:
+  steps:
+    - name: test
+      image: python:3.9
+      script: |
+        #!/bin/sh
+        python -m pip install --upgrade pip
+        pip install nose
+        nosetests -v
